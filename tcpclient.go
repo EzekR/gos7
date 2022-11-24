@@ -178,7 +178,11 @@ func (mb *tcpTransporter) tcpConnect() error {
 	mb.mu.Lock()
 	defer mb.mu.Unlock()
 	if mb.conn == nil {
-		dialer := net.Dialer{Timeout: mb.Timeout}
+		addr, err1 := net.ResolveTCPAddr("tcp", "192.168.0.150:0")
+		if err1 != nil {
+			fmt.Println("resolve ip error:", err1.Error())
+		}
+		dialer := net.Dialer{Timeout: mb.Timeout, LocalAddr: addr}
 		conn, err := dialer.Dial("tcp", mb.Address)
 		if err != nil {
 			return err
